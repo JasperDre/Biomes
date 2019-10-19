@@ -50,6 +50,7 @@ namespace Visualization
                 if (livingEntityTracker.GetSpecimen() == aBiodiversity)
                 {
                     livingEntityTracker.gameObject.SetActive(true);
+                    livingEntityTracker.UpdateButton();
                 }
                 else if (livingEntityTracker.gameObject.activeInHierarchy)
                 {

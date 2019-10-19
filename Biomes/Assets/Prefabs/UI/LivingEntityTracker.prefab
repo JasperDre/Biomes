@@ -59,7 +59,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -164,6 +164,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d99f475396f9ac9468875cbabcb07414, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mySpecimen: 
-  myIndex: 0
-  myTrackedLivingEntity: {fileID: 0}
+  myButtonPrefab: {fileID: 7997938234579468141, guid: d9e13061f733819418d580fde1a9201d,
+    type: 3}
