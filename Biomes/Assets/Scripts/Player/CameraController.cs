@@ -4,78 +4,121 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private float mainSpeed = 100.0f; //regular speed
-    [SerializeField] private float shiftAdd = 250.0f; //multiplied by how long shift is held.  Basically running
-    [SerializeField] private float maxShift = 1000.0f; //Maximum speed when holdin gshift
-    [SerializeField] private float camSens = 0.25f; //How sensitive it with mouse
-    private Vector3 lastMouse = new Vector3(255, 255, 255); //kind of in the middle of the screen, rather than at the top (play)
-    private float totalRun = 1.0f;
+    public enum Mode
+    {
+        Orbiting = 0,
+        Flying = 1,
+    }
+
+    [SerializeField] private Mode myMode;
+    [SerializeField] private KeyCode mySwitchModeKey;
+
+    [Header("Orbit")]
+    [SerializeField] private Transform myFocusPoint;
+    [SerializeField] private Vector3 myRotationAxis;
+    [SerializeField] private float myRotationSpeed = 1.0f;
+
+    [Header("Fly")]
+    [SerializeField] private float mySpeed = 100.0f;
+    [SerializeField] private float mySpeedMultiplier = 250.0f;
+    [SerializeField] private float myMaxSpeed = 1000.0f;
+    [SerializeField] private float mySensitivity = 0.25f; 
+    private Vector3 myLastMousePosition = new Vector3(255, 255, 255);
+    private float myTotalMultiplied = 1.0f;
 
     void Update()
     {
-        lastMouse = Input.mousePosition - lastMouse;
-        lastMouse = new Vector3(-lastMouse.y * camSens, lastMouse.x * camSens, 0);
-        lastMouse = new Vector3(transform.eulerAngles.x + lastMouse.x, transform.eulerAngles.y + lastMouse.y, 0);
-        transform.eulerAngles = lastMouse;
-        lastMouse = Input.mousePosition;
-        //Mouse  camera angle done.  
+        if (Input.GetKeyUp(mySwitchModeKey))
+        {
+            switch (myMode)
+            {
+                case Mode.Orbiting:
+                    myMode = Mode.Flying;
+                    break;
+                case Mode.Flying:
+                    myMode = Mode.Orbiting;
+                    break;
+                default:
+                    Debug.LogWarning("Mode is undefined");
+                    break;
+            }
+        }
 
-        //Keyboard commands
-        Vector3 p = GetBaseInput();
+        switch (myMode)
+        {
+            case Mode.Orbiting:
+                UpdateOrbitingBehavior();
+                break;
+            case Mode.Flying:
+                UpdateFlyingBehavior();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void UpdateOrbitingBehavior()
+    {
+        transform.RotateAround(myFocusPoint.position, myRotationAxis, myRotationSpeed * Time.unscaledDeltaTime);
+    }
+
+    private void UpdateFlyingBehavior()
+    {
+        myLastMousePosition = Input.mousePosition - myLastMousePosition;
+        myLastMousePosition = new Vector3(-myLastMousePosition.y * mySensitivity, myLastMousePosition.x * mySensitivity, 0);
+        myLastMousePosition = new Vector3(transform.eulerAngles.x + myLastMousePosition.x, transform.eulerAngles.y + myLastMousePosition.y, 0);
+        transform.eulerAngles = myLastMousePosition;
+        myLastMousePosition = Input.mousePosition;
+
+        Vector3 inputAxes = GetBaseInput();
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            totalRun += Time.unscaledDeltaTime;
-            p = p * totalRun * shiftAdd;
-            p.x = Mathf.Clamp(p.x, -maxShift, maxShift);
-            p.y = Mathf.Clamp(p.y, -maxShift, maxShift);
-            p.z = Mathf.Clamp(p.z, -maxShift, maxShift);
+            myTotalMultiplied += Time.unscaledDeltaTime;
+            inputAxes = inputAxes * myTotalMultiplied * mySpeedMultiplier;
+            inputAxes.x = Mathf.Clamp(inputAxes.x, -myMaxSpeed, myMaxSpeed);
+            inputAxes.y = Mathf.Clamp(inputAxes.y, -myMaxSpeed, myMaxSpeed);
+            inputAxes.z = Mathf.Clamp(inputAxes.z, -myMaxSpeed, myMaxSpeed);
         }
         else
         {
-            totalRun = Mathf.Clamp(totalRun * 0.5f, 1f, 1000f);
-            p = p * mainSpeed;
+            myTotalMultiplied = Mathf.Clamp(myTotalMultiplied * 0.5f, 1f, 1000f);
+            inputAxes = inputAxes * mySpeed;
         }
 
-        if (Input.GetKeyUp(KeyCode.O))
-        {
-            Time.timeScale = 10.0f;
-        }
-
-        p = p * Time.deltaTime;
+        inputAxes = inputAxes * Time.unscaledDeltaTime;
         Vector3 newPosition = transform.position;
         if (Input.GetKey(KeyCode.Space))
-        { //If player wants to move on X and Z axis only
-            transform.Translate(p);
+        {
+            transform.Translate(inputAxes);
             newPosition.x = transform.position.x;
             newPosition.z = transform.position.z;
             transform.position = newPosition;
         }
         else
         {
-            transform.Translate(p);
+            transform.Translate(inputAxes);
         }
-
     }
 
     private Vector3 GetBaseInput()
-    { //returns the basic values, if it's 0 than it's not active.
-        Vector3 p_Velocity = new Vector3();
+    {
+        Vector3 velocity = new Vector3();
         if (Input.GetKey(KeyCode.W))
         {
-            p_Velocity += new Vector3(0, 0, 1);
+            velocity += new Vector3(0, 0, 1);
         }
         if (Input.GetKey(KeyCode.S))
         {
-            p_Velocity += new Vector3(0, 0, -1);
+            velocity += new Vector3(0, 0, -1);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            p_Velocity += new Vector3(-1, 0, 0);
+            velocity += new Vector3(-1, 0, 0);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            p_Velocity += new Vector3(1, 0, 0);
+            velocity += new Vector3(1, 0, 0);
         }
-        return p_Velocity;
+        return velocity;
     }
 }
