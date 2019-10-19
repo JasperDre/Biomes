@@ -7,7 +7,6 @@ namespace Visualization
 {
     public class Visualizer : MonoBehaviour
     {
-        [SerializeField] private ScrollRect myScrollView;
         [SerializeField] private GameObject myScrollContent;
         [SerializeField] private LivingEntityTracker myLivingEntityTrackerPrefab;
 
@@ -17,7 +16,6 @@ namespace Visualization
         private void Awake()
         {
             myLivingEntityTrackers = new List<LivingEntityTracker>();
-            myScrollView.verticalNormalizedPosition = 1.0f;
             trackerCount = 0;
         }
 
