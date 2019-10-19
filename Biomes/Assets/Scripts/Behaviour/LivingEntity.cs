@@ -6,8 +6,8 @@ public class LivingEntity : MonoBehaviour
     public Specimen Specimen;
     public Material material;
 
-    public int age;
-    public int lifeSpan;
+    public int myAge;
+    public int myLifeSpan;
 
     public Coord coord;
 
@@ -39,19 +39,27 @@ public class LivingEntity : MonoBehaviour
             case Specimen.Undefined:
                 break;
             case Specimen.Plant:
-                lifeSpan = Random.Range(1, 76);
+                myLifeSpan = Random.Range(1, 76);
                 break;
             case Specimen.Rabbit:
-                lifeSpan = Random.Range(1, 3);
+                myLifeSpan = Random.Range(1, 3);
                 break;
             case Specimen.Fox:
-                lifeSpan = Random.Range(1, 6);
+                myLifeSpan = Random.Range(1, 6);
                 break;
             default:
-                lifeSpan = 0;
+                myLifeSpan = 0;
                 Debug.LogWarning("No life span set for " + gameObject.name);
                 break;
         }
+    }
+
+    public void Age()
+    {
+        myAge++;
+
+        if (myAge > myLifeSpan)
+            Die(CauseOfDeath.Age);
     }
 
     protected virtual void Die(CauseOfDeath cause)

@@ -144,11 +144,11 @@ public class DayNightCycle : MonoBehaviour
                 _yearNumber++;
                 _dayNumber = 0;
 
-                Animal[] animals = FindObjectsOfType<Animal>();
+                LivingEntity[] organisms = FindObjectsOfType<LivingEntity>();
 
-                foreach (Animal animal in animals)
+                foreach (LivingEntity organism in organisms)
                 {
-                    animal.age++;
+                    organism.Age();
                 }
             }
         }
