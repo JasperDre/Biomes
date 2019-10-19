@@ -15,10 +15,16 @@ namespace Visualization
 
         private int trackerCount = 0;
 
+        private void Awake()
+        {
+            myLivingEntityTrackers = new List<LivingEntityTracker>();
+            myScrollView.verticalNormalizedPosition = 1.0f;
+        }
+
         // Start is called before the first frame update
         void Start()
         {
-            myLivingEntityTrackers = new List<LivingEntityTracker>();
+           
         }
 
         // Update is called once per frame
@@ -32,7 +38,7 @@ namespace Visualization
             LivingEntityTracker livingEntityTracker = Instantiate(myLivingEntityTrackerPrefab);
             livingEntityTracker.transform.SetParent(myScrollContent.transform, false);
             livingEntityTracker.SetupTracker(aName, trackerCount, aTransform);
-            //myLivingEntityTrackers.Add(livingEntityTracker);
+            myLivingEntityTrackers.Add(livingEntityTracker);
             livingEntityTracker.gameObject.SetActive(false);
             trackerCount++;
         }
