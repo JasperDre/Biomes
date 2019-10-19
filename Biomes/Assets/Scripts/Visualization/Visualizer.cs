@@ -32,7 +32,7 @@ namespace Visualization
             LivingEntityTracker livingEntityTracker = Instantiate(myLivingEntityTrackerPrefab);
             livingEntityTracker.transform.SetParent(myScrollContent.transform, false);
             livingEntityTracker.SetupTracker(aName, trackerCount, aTransform);
-            myLivingEntityTrackers.Add(livingEntityTracker);
+            //myLivingEntityTrackers.Add(livingEntityTracker);
             livingEntityTracker.gameObject.SetActive(false);
             trackerCount++;
         }
