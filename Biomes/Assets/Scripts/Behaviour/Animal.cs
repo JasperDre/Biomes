@@ -233,8 +233,12 @@ public class Animal : LivingEntity
             if (foodTarget && hunger > 0)
             {
                 float eatAmount = Mathf.Min(hunger, Time.deltaTime * 1 / eatDuration);
-                eatAmount = ((Plant)foodTarget).Consume(eatAmount);
-                hunger -= eatAmount;
+                Plant plant = foodTarget as Plant;
+                if (plant != null)
+                {
+                    eatAmount = plant.Consume(eatAmount);
+                    hunger -= eatAmount;
+                }
             }
         }
         else if (currentAction == CreatureAction.Drinking)
