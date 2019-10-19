@@ -419,8 +419,15 @@ public class Environment : MonoBehaviour
                 entity.name = specimen.myPrefab.ToString() + i.ToString();
                 entity.Init(coord);
 
-                Animal animal = entity.GetComponent<Animal>();
-                myVisualizer.SpawnTrackerDynamically(entity.transform, animal.Specimen.ToString());
+                if (entity.GetComponent<Animal>() != null)
+                {
+                    Animal animal = entity.GetComponent<Animal>();
+                    myVisualizer.SpawnTrackerDynamically(entity.transform, animal.Specimen.ToString());
+                }
+                else if (entity.GetComponent<Plant>() != null)
+                {
+                    myVisualizer.SpawnTrackerDynamically(entity.transform, "Plant");
+                }
 
                 SpecimenMaps[entity.Specimen].Add(entity, coord);
             }
