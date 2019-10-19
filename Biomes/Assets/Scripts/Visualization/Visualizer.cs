@@ -12,13 +12,13 @@ namespace Visualization
         [SerializeField] private LivingEntityTracker myLivingEntityTrackerPrefab;
 
         private List<LivingEntityTracker> myLivingEntityTrackers;
-
-        private int trackerCount = 0;
+        private int trackerCount;
 
         private void Awake()
         {
             myLivingEntityTrackers = new List<LivingEntityTracker>();
             myScrollView.verticalNormalizedPosition = 1.0f;
+            trackerCount = 0;
         }
 
         // Start is called before the first frame update

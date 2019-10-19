@@ -35,7 +35,7 @@ public class Environment : MonoBehaviour
 
     static Dictionary<Specimen, Map> SpecimenMaps;
 
-    private static Visualization.Visualizer myVisualizer;
+    private Visualization.Visualizer myVisualizer;
 
     private void Awake()
     {
@@ -419,7 +419,8 @@ public class Environment : MonoBehaviour
                 entity.name = specimen.myPrefab.ToString() + i.ToString();
                 entity.Init(coord);
 
-                myVisualizer.SpawnTrackerDynamically(entity.transform, entity.ToString());
+                Animal animal = entity.GetComponent<Animal>();
+                myVisualizer.SpawnTrackerDynamically(entity.transform, animal.Specimen.ToString());
 
                 SpecimenMaps[entity.Specimen].Add(entity, coord);
             }
