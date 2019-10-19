@@ -143,6 +143,13 @@ public class DayNightCycle : MonoBehaviour
             {
                 _yearNumber++;
                 _dayNumber = 0;
+
+                Animal[] animals = FindObjectsOfType<Animal>();
+
+                foreach (Animal animal in animals)
+                {
+                    animal.age++;
+                }
             }
         }
     }

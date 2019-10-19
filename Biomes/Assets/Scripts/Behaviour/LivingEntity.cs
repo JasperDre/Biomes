@@ -6,6 +6,9 @@ public class LivingEntity : MonoBehaviour
     public Specimen Specimen;
     public Material material;
 
+    public int age;
+    public int lifeSpan;
+
     public Coord coord;
 
     [HideInInspector]
@@ -29,6 +32,25 @@ public class LivingEntity : MonoBehaviour
                 material = meshRenderer.materials[i];
                 break;
             }
+        }
+
+        switch (Specimen)
+        {
+            case Specimen.Undefined:
+                break;
+            case Specimen.Plant:
+                lifeSpan = Random.Range(1, 76);
+                break;
+            case Specimen.Rabbit:
+                lifeSpan = Random.Range(1, 3);
+                break;
+            case Specimen.Fox:
+                lifeSpan = Random.Range(1, 6);
+                break;
+            default:
+                lifeSpan = 0;
+                Debug.LogWarning("No life span set for " + gameObject.name);
+                break;
         }
     }
 
