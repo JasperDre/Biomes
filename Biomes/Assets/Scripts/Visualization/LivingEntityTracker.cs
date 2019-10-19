@@ -13,7 +13,12 @@ namespace Visualization
         private int myIndex;
         private Transform myTrackedLivingEntity;
         private GameObject myButton;
+        private CameraController myCameraController;
 
+        private void Awake()
+        {
+            myCameraController = Camera.main.GetComponent<CameraController>();
+        }
         // Start is called before the first frame update
         void Start()
         {
@@ -45,8 +50,7 @@ namespace Visualization
 
         private void FocusTrackedLivingEntity()
         {
-            Camera.main.transform.position = myTrackedLivingEntity.transform.position + new Vector3(0.0f, 5.0f, 5.0f);
-            Camera.main.transform.LookAt(myTrackedLivingEntity);
+            myCameraController.StartFollowing(myTrackedLivingEntity);
         }
 
         public string GetSpecimen()

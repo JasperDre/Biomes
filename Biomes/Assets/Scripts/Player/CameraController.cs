@@ -7,14 +7,15 @@ public class CameraController : MonoBehaviour
     public enum Mode
     {
         Orbiting = 0,
-        Flying = 1,
+        Following = 1,
+        Flying = 2,
     }
 
     [SerializeField] private Mode myMode;
     [SerializeField] private KeyCode mySwitchModeKey;
 
     [Header("Orbit")]
-    [SerializeField] private Transform myFocusPoint;
+    [SerializeField] private Transform myTerrain;
     [SerializeField] private Vector3 myRotationAxis;
     [SerializeField] private float myRotationSpeed = 1.0f;
 
@@ -23,16 +24,32 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float mySpeedMultiplier = 250.0f;
     [SerializeField] private float myMaxSpeed = 1000.0f;
     [SerializeField] private float mySensitivity = 0.25f; 
+
     private Vector3 myLastMousePosition = new Vector3(255, 255, 255);
     private float myTotalMultiplied = 1.0f;
+    private Transform myFocusPoint;
 
-    void Update()
+    public void StartFollowing(Transform aTransform)
+    {
+        SetFocusPoint(aTransform);
+        myMode = Mode.Following;
+    }
+
+    public void SetFocusPoint(Transform aTransform)
+    {
+        myFocusPoint = aTransform;
+    }
+
+    private void Update()
     {
         if (Input.GetKeyUp(mySwitchModeKey))
         {
             switch (myMode)
             {
                 case Mode.Orbiting:
+                    myMode = Mode.Following;
+                    break;
+                case Mode.Following:
                     myMode = Mode.Flying;
                     break;
                 case Mode.Flying:
@@ -49,17 +66,29 @@ public class CameraController : MonoBehaviour
             case Mode.Orbiting:
                 UpdateOrbitingBehavior();
                 break;
+            case Mode.Following:
+                UpdateFollowingCamera();
+                break;
             case Mode.Flying:
                 UpdateFlyingBehavior();
                 break;
             default:
+                Debug.LogWarning("Mode is undefined");
                 break;
         }
     }
 
     private void UpdateOrbitingBehavior()
     {
+        myFocusPoint = myTerrain;
+        transform.LookAt(myFocusPoint.position);
         transform.RotateAround(myFocusPoint.position, myRotationAxis, myRotationSpeed * Time.unscaledDeltaTime);
+    }
+
+    private void UpdateFollowingCamera()
+    {
+        transform.position = myFocusPoint.position + new Vector3(0.0f, 5.0f, 5.0f);
+        transform.LookAt(myFocusPoint.position);
     }
 
     private void UpdateFlyingBehavior()

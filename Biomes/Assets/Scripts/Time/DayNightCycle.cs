@@ -105,7 +105,7 @@ public class DayNightCycle : MonoBehaviour
         AdjustSunRotation();
         SunIntensity();
         AdjustSunColor();
-        UpdateModules(); //will update modules each frame
+        UpdateModules(); // TODO: Optimize this away from each frame
     }
 
     private void UpdateTimeScale()
@@ -122,36 +122,37 @@ public class DayNightCycle : MonoBehaviour
         float curveTotal = 0;
 
         for (int i = 0; i < numberSteps; i++)
-        {
             curveTotal += timeCurve.Evaluate(i * stepSize);
-        }
 
         timeCurveNormalization = curveTotal / numberSteps; //keeps day length at target value
     }
 
     private void UpdateTime()
     {
-        _timeOfDay += Time.deltaTime * _timeScale / 86400; // seconds in a day
+        _timeOfDay += Time.deltaTime * _timeScale / 86400.0f;
         elapsedTime += Time.deltaTime;
-        if (_timeOfDay > 1) //new day!!
+        if (_timeOfDay > 1)
         {
             elapsedTime = 0;
             _dayNumber++;
             _timeOfDay -= 1;
 
-            if (_dayNumber > _yearLength) //new year!
+            if (_dayNumber > _yearLength)
             {
                 _yearNumber++;
                 _dayNumber = 0;
 
-                LivingEntity[] organisms = FindObjectsOfType<LivingEntity>();
-
-                foreach (LivingEntity organism in organisms)
-                {
-                    organism.Age();
-                }
+                HandleNewYear();
             }
         }
+    }
+
+    private void HandleNewYear()
+    {
+        LivingEntity[] organisms = FindObjectsOfType<LivingEntity>();
+
+        foreach (LivingEntity organism in organisms)
+            organism.Age();
     }
 
     private void UpdateClock()
@@ -177,16 +178,13 @@ public class DayNightCycle : MonoBehaviour
             minuteString = minute.ToString();
 
         if (use24Clock)
-            clockText.text = hourString + " : " + minuteString;
+            clockText.text = hourString + ":" + minuteString;
         else if (time > 0.5f)
-            clockText.text = hourString + " : " + minuteString + " pm";
+            clockText.text = hourString + ":" + minuteString + " pm";
         else
-            clockText.text = hourString + " : " + minuteString + " am";
-
-
+            clockText.text = hourString + ":" + minuteString + " am";
     }
 
-    //rotates the sun daily (and seasonally soon too);
     private void AdjustSunRotation()
     {
         float sunAngle = timeOfDay * 360f;
@@ -219,7 +217,6 @@ public class DayNightCycle : MonoBehaviour
         moduleList.Remove(module);
     }
 
-    //update each module based on current sun intensity
     private void UpdateModules()
     {
         foreach (DayNightModuleBase module in moduleList)
