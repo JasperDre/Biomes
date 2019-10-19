@@ -24,7 +24,7 @@ public class CameraController : MonoBehaviour
         Vector3 p = GetBaseInput();
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            totalRun += Time.deltaTime;
+            totalRun += Time.unscaledDeltaTime;
             p = p * totalRun * shiftAdd;
             p.x = Mathf.Clamp(p.x, -maxShift, maxShift);
             p.y = Mathf.Clamp(p.y, -maxShift, maxShift);
@@ -34,6 +34,11 @@ public class CameraController : MonoBehaviour
         {
             totalRun = Mathf.Clamp(totalRun * 0.5f, 1f, 1000f);
             p = p * mainSpeed;
+        }
+
+        if (Input.GetKeyUp(KeyCode.O))
+        {
+            Time.timeScale = 10.0f;
         }
 
         p = p * Time.deltaTime;
