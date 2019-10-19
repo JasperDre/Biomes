@@ -47,9 +47,6 @@ public class CameraController : MonoBehaviour
             switch (myMode)
             {
                 case Mode.Orbiting:
-                    myMode = Mode.Following;
-                    break;
-                case Mode.Following:
                     myMode = Mode.Flying;
                     break;
                 case Mode.Flying:
