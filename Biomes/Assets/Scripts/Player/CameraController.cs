@@ -61,13 +61,13 @@ public class CameraController : MonoBehaviour
         switch (myMode)
         {
             case Mode.Orbiting:
-                UpdateOrbitingBehavior();
+                UpdateOrbitingbehaviour();
                 break;
             case Mode.Following:
                 UpdateFollowingCamera();
                 break;
             case Mode.Flying:
-                UpdateFlyingBehavior();
+                UpdateFlyingbehaviour();
                 break;
             default:
                 Debug.LogWarning("Mode is undefined");
@@ -75,7 +75,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private void UpdateOrbitingBehavior()
+    private void UpdateOrbitingbehaviour()
     {
         myFocusPoint = myTerrain;
         transform.LookAt(myFocusPoint.position);
@@ -88,7 +88,7 @@ public class CameraController : MonoBehaviour
         transform.LookAt(myFocusPoint.position);
     }
 
-    private void UpdateFlyingBehavior()
+    private void UpdateFlyingbehaviour()
     {
         myLastMousePosition = Input.mousePosition - myLastMousePosition;
         myLastMousePosition = new Vector3(-myLastMousePosition.y * mySensitivity, myLastMousePosition.x * mySensitivity, 0);
