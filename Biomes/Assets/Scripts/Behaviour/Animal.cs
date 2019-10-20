@@ -10,6 +10,7 @@ public class Animal : LivingEntity
     public Specimen diet;
 
     public CreatureAction currentAction;
+    public SleepBehaviour mySleepBehaviour;
     public Genes genes;
     public Color maleColour;
     public Color femaleColour;
@@ -60,6 +61,25 @@ public class Animal : LivingEntity
         genes = Genes.RandomGenes(1);
 
         material.color = (genes.isMale) ? maleColour : femaleColour;
+
+        switch (Specimen)
+        {
+            case Specimen.Undefined:
+                mySleepBehaviour = SleepBehaviour.None;
+                break;
+            case Specimen.Plant:
+                mySleepBehaviour = SleepBehaviour.None;
+                break;
+            case Specimen.Rabbit:
+                mySleepBehaviour = SleepBehaviour.Crepuscular;
+                break;
+            case Specimen.Fox:
+                mySleepBehaviour = SleepBehaviour.Nocturnal;
+                break;
+            default:
+                Debug.LogWarning("Specimen is undefined");
+                break;
+        }
 
         ChooseNextAction();
     }
