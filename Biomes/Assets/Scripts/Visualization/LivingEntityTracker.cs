@@ -17,7 +17,7 @@ namespace Visualization
 
         private void Awake()
         {
-            myCameraController = Camera.main.GetComponent<CameraController>();
+            myCameraController = FindObjectOfType<CameraController>();
         }
         // Start is called before the first frame update
         void Start()
