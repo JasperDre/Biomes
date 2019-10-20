@@ -42,23 +42,11 @@ public class Environment : MonoBehaviour
         myVisualizer = FindObjectOfType<Visualization.Visualizer>();
     }
 
-    void Start()
+    public void Grow()
     {
         prng = new System.Random();
         Init();
         SpawnInitialBiodiversity();
-    }
-
-    void OnDrawGizmos()
-    {
-        /* 
-        if (showMapDebug) {
-            if (preyMap != null && mapCoordTransform != null) {
-                Coord coord = new Coord ((int) mapCoordTransform.position.x, (int) mapCoordTransform.position.z);
-                preyMap.DrawDebugGizmos (coord, mapViewDst);
-            }
-        }
-        */
     }
 
     public static void RegisterMove(LivingEntity entity, Coord from, Coord to)

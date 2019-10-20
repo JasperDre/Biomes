@@ -27,6 +27,13 @@ public class Simulation : MonoBehaviour
     [Header("Data")]
     [SerializeField] private State myState;
 
+    private Environment myEnvironment;
+
+    private void Awake()
+    {
+        myEnvironment = FindObjectOfType<Environment>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -96,15 +103,6 @@ public class Simulation : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Escape) || Input.GetKeyUp(KeyCode.Space))
         {
-            if (myState == State.Paused)
-            {
-                Time.timeScale = 1.0f;
-            }
-            else if (myState == State.Simulating)
-            {
-                Time.timeScale = 0;
-            }
-
             SwitchState();
         }
     }
@@ -118,6 +116,39 @@ public class Simulation : MonoBehaviour
         myScreenPanel.SetActive(false);
 
         myLoadingBar.value = 0.0f;
+
+        myEnvironment.Grow();
+    }
+
+    private void SwitchToSimulatingState()
+    {
+        myState = State.Simulating;
+        myScreenPanel.SetActive(true);
+        myLoadPanel.SetActive(false);
+        myPausePanel.SetActive(false);
+        myMenuPanel.SetActive(false);
+
+        Time.timeScale = 1.0f;
+    }
+
+    private void SwitchToPausedState()
+    {
+        myState = State.Paused;
+        myPausePanel.SetActive(true);
+        myMenuPanel.SetActive(false);
+        myScreenPanel.SetActive(false);
+        myLoadPanel.SetActive(false);
+
+        Time.timeScale = 0.0f;
+    }
+
+    private void SwitchToMenuState()
+    {
+        myState = State.Menu;
+        myMenuPanel.SetActive(true);
+        myLoadPanel.SetActive(false);
+        myPausePanel.SetActive(false);
+        myScreenPanel.SetActive(false);
     }
 
     private void SwitchState()
@@ -125,40 +156,29 @@ public class Simulation : MonoBehaviour
         switch (myState)
         {
             case State.None:
-                myState = State.Menu;
-                myMenuPanel.SetActive(true);
-                myLoadPanel.SetActive(false);
-                myPausePanel.SetActive(false);
-                myScreenPanel.SetActive(false);
+                SwitchToMenuState();
                 break;
             case State.Menu:
                 SwitchToLoadingState();
                 break;
             case State.Loading:
-                myState = State.Simulating;
-                myScreenPanel.SetActive(true);
-                myLoadPanel.SetActive(false);
-                myPausePanel.SetActive(false);
-                myMenuPanel.SetActive(false);
+                SwitchToSimulatingState();
                 break;
             case State.Simulating:
-                myState = State.Paused;
-                myPausePanel.SetActive(true);
-                myMenuPanel.SetActive(false);
-                myScreenPanel.SetActive(false);
-                myLoadPanel.SetActive(false);
+                SwitchToPausedState();
                 break;
             case State.Paused:
-                myState = State.Simulating;
-                myScreenPanel.SetActive(true);
-                myMenuPanel.SetActive(false);
-                myLoadPanel.SetActive(false);
-                myPausePanel.SetActive(false);
+                SwitchToSimulatingState();
                 break;
             default:
                 Debug.LogWarning("State is undefined");
                 break;
         }
+    }
+
+    public void Exit()
+    {
+        Application.Quit();
     }
 
     public bool isPaused()
