@@ -7,17 +7,18 @@ namespace Visualization
 {
     public class LivingEntityTracker : MonoBehaviour
     {
-        [SerializeField] private GameObject myButtonPrefab;
+        [SerializeField] private Text myText;
         private string myName;
         private string mySpecimen;
         private int myIndex;
         private Transform myTrackedLivingEntity;
-        private GameObject myButton;
+        private Button myButton;
         private CameraController myCameraController;
 
         private void Awake()
         {
             myCameraController = FindObjectOfType<CameraController>();
+            myButton = GetComponentInChildren<Button>();
         }
         // Start is called before the first frame update
         void Start()
@@ -37,15 +38,12 @@ namespace Visualization
             myIndex = anIndex;
             myTrackedLivingEntity = aTransform;
             myName = aSpecimen + anIndex;
-            transform.Find("Text_name").gameObject.GetComponent<Text>().text = myName;
+            myText.text = myName;
         }
 
         public void UpdateButton()
         {
-            myButton = Instantiate(myButtonPrefab);
-            myButton.GetComponent<RectTransform>().SetParent(transform, false);
-            myButton.GetComponent<Button>().onClick.AddListener(() => FocusTrackedLivingEntity());
-            myButton.GetComponent<RectTransform>().anchoredPosition3D = Vector3.zero;
+            myButton.onClick.AddListener(() => FocusTrackedLivingEntity());
         }
 
         private void FocusTrackedLivingEntity()
