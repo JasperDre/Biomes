@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class Simulation : MonoBehaviour
+public class Simulation : MonoBehaviour
 {
     public enum State
     {
@@ -28,27 +28,20 @@ public sealed class Simulation : MonoBehaviour
     [SerializeField] private State myState;
 
     private Environment myEnvironment;
+    private float myLoadingProgressTarget = 0;
+    private float myCurrentTimeToLoadingProgressTarget = 0.0f;
+    private float myTimeToLoadingProgressTarget = 0.5f;
 
-    private static Simulation instance = null;
-    private static readonly object padlock = new Object();
-
-    public static Simulation Instance
-    {
-        get
-        {
-            lock (padlock)
-            {
-                if (instance == null)
-                {
-                    instance = new Simulation();
-                }
-                return instance;
-            }
-        }
-    }
+    private static Simulation myInstance = null;
+    public static Simulation Instance { get { return myInstance; } }
 
     private void Awake()
     {
+        if (myInstance != null && myInstance != this)
+            Destroy(gameObject);
+        else
+            myInstance = this;
+
         myEnvironment = FindObjectOfType<Environment>();
     }
 
@@ -83,6 +76,11 @@ public sealed class Simulation : MonoBehaviour
         }
     }
 
+    public void SetLoadingProgressTarget(float aValue)
+    {
+        myLoadingProgressTarget = aValue;
+    }
+
     private void UpdateMenuState()
     {
         if (Input.GetKeyUp(KeyCode.Space))
@@ -98,6 +96,16 @@ public sealed class Simulation : MonoBehaviour
 
     private void UpdateLoadingState()
     {
+        if (myCurrentTimeToLoadingProgressTarget <= myTimeToLoadingProgressTarget)
+        {
+            myCurrentTimeToLoadingProgressTarget += Time.deltaTime;
+            myLoadingBar.value = Mathf.Lerp(myLoadingBar.value, myLoadingProgressTarget, myCurrentTimeToLoadingProgressTarget / myTimeToLoadingProgressTarget);
+        }
+        else
+        {
+            myCurrentTimeToLoadingProgressTarget = 0;
+        }
+
         if (myLoadingBar.value >= 1.0f)
         {
             myLoadingBar.value = 1.0f;

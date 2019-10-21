@@ -45,7 +45,9 @@ public class Environment : MonoBehaviour
     public void Grow()
     {
         prng = new System.Random();
+
         Init();
+        
         SpawnInitialBiodiversity();
     }
 
@@ -195,6 +197,8 @@ public class Environment : MonoBehaviour
     // Call terrain generator and cache useful info
     void Init()
     {
+        Simulation.Instance.SetLoadingProgressTarget(0.2f);
+
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
         var terrainGenerator = FindObjectOfType<TerrainGenerator>();
@@ -243,7 +247,11 @@ public class Environment : MonoBehaviour
 
         //LogPredatorPreyRelationships ();
 
+        Simulation.Instance.SetLoadingProgressTarget(0.4f);
+
         SpawnTrees();
+
+        Simulation.Instance.SetLoadingProgressTarget(0.6f);
 
         walkableNeighboursMap = new Coord[size, size][];
 
@@ -330,6 +338,9 @@ public class Environment : MonoBehaviour
                 }
             }
         }
+
+        Simulation.Instance.SetLoadingProgressTarget(0.8f);
+
         Debug.Log("Init time: " + sw.ElapsedMilliseconds);
     }
 
@@ -420,6 +431,8 @@ public class Environment : MonoBehaviour
                 SpecimenMaps[entity.Specimen].Add(entity, coord);
             }
         }
+
+        Simulation.Instance.SetLoadingProgressTarget(1.0f);
     }
 
     void LogPredatorPreyRelationships()
