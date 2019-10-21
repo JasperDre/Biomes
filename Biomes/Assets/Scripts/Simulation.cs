@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Simulation : MonoBehaviour
+public sealed class Simulation : MonoBehaviour
 {
     public enum State
     {
@@ -28,6 +28,24 @@ public class Simulation : MonoBehaviour
     [SerializeField] private State myState;
 
     private Environment myEnvironment;
+
+    private static Simulation instance = null;
+    private static readonly object padlock = new Object();
+
+    public static Simulation Instance
+    {
+        get
+        {
+            lock (padlock)
+            {
+                if (instance == null)
+                {
+                    instance = new Simulation();
+                }
+                return instance;
+            }
+        }
+    }
 
     private void Awake()
     {
@@ -80,11 +98,7 @@ public class Simulation : MonoBehaviour
 
     private void UpdateLoadingState()
     {
-        if (myLoadingBar.value < 1.0f)
-        {
-            myLoadingBar.value += Time.deltaTime;
-        }
-        else
+        if (myLoadingBar.value >= 1.0f)
         {
             myLoadingBar.value = 1.0f;
             SwitchState();
